@@ -26,13 +26,13 @@ public class CrimesController {
     private URL location;
 
     @FXML // fx:id="boxAnno"
-    private ComboBox<?> boxAnno; // Value injected by FXMLLoader
+    private ComboBox<Integer> boxAnno; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxMese"
-    private ComboBox<?> boxMese; // Value injected by FXMLLoader
+    private ComboBox<Integer> boxMese; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxGiorno"
-    private ComboBox<?> boxGiorno; // Value injected by FXMLLoader
+    private ComboBox<Integer> boxGiorno; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnCreaReteCittadina"
     private Button btnCreaReteCittadina; // Value injected by FXMLLoader
@@ -47,13 +47,42 @@ public class CrimesController {
     private TextArea txtResult; // Value injected by FXMLLoader
 
     @FXML
-    void doCreaReteCittadina(ActionEvent event) {
-    	
+    void doCreaReteCittadina(ActionEvent event)
+    {
+    	if (boxAnno.getSelectionModel().getSelectedIndex() != -1)
+    	{
+	    	int annoSelezionato = boxAnno.getSelectionModel().getSelectedItem();
+	    	txtResult.clear();
+	    	txtResult.appendText(model.handleCreaReteCittadina(annoSelezionato));
+    	}
+    	else
+    	{
+    		txtResult.clear();
+    		txtResult.appendText("Devi prima selezionare un anno.\n");
+    	}
     }
 
     @FXML
-    void doSimula(ActionEvent event) {
-
+    void doSimula(ActionEvent event) 
+    {
+    	try
+    	{
+    		int n = Integer.parseInt(txtN.getText());
+    		if (n >= 1 && n <= 10)
+    		{
+    			int anno = boxAnno.getSelectionModel().getSelectedItem();
+    			int mese = boxMese.getSelectionModel().getSelectedItem();
+    			int giorno = boxGiorno.getSelectionModel().getSelectedItem();
+    			model.handleSimula(n, giorno, mese, anno);
+    		}
+    		else
+    			//TODO
+    		{}
+    	}
+    	catch (NumberFormatException e)
+    	{
+    		//TODO 
+    	}
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -68,7 +97,15 @@ public class CrimesController {
 
     }
     
-    public void setModel(Model model) {
+    public void setModel(Model model) 
+    {
     	this.model = model;
+    	
+    	//load boxAnno
+    	boxAnno.getItems().addAll(model.loadYears());
+    	
+    	//punto 2
+    	boxMese.getItems().addAll(model.loadMonths());
+    	boxGiorno.getItems().addAll(model.loadDays());
     }
 }

@@ -14,7 +14,8 @@ public class EventsDao {
 	
 	public List<Event> listAllEvents(){
 		String sql = "SELECT * FROM events" ;
-		try {
+		try
+		{
 			Connection conn = DBConnect.getConnection() ;
 
 			PreparedStatement st = conn.prepareStatement(sql) ;
