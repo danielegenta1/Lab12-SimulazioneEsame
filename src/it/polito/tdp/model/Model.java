@@ -43,6 +43,7 @@ public class Model
 	//TODO stamapare in modo più carino
 	public String handleCreaReteCittadina(int annoSelezionato)
 	{
+		// posso anche fare semplice query
 		districts = new LinkedList<Integer>();
 		for (Event e : events)
 		{
@@ -66,6 +67,7 @@ public class Model
 			cnt = 0;
 			centro_i_lat = 0;
 			centro_i_lon = 0;
+			// posso anche far media con query
 			for (Event e : events)
 			{
 				if (e.getDistrict_id() == district && e.getReported_date().getYear() == annoSelezionato)
@@ -85,16 +87,19 @@ public class Model
 		// creo vertici
 		Graphs.addAllVertices(this.grafo, centroDistretto.keySet());
 		
-		// creo archi
-		for (int distretto : grafo.vertexSet())
+		// creo archi => su pochi vertici questo metodo va bene 
+		for (Integer distretto : grafo.vertexSet())
 		{
-			for (int distretto2 : grafo.vertexSet())
+			for (Integer distretto2 : grafo.vertexSet())
 			{
-				if (distretto != distretto2)
+				if (!distretto.equals(distretto2))
 				{
 					double peso = LatLngTool.distance(centroDistretto.get(distretto), centroDistretto.get(distretto2), LengthUnit.KILOMETER);
-					grafo.addEdge(distretto, distretto2);
-					grafo.setEdgeWeight(grafo.getEdge(distretto, distretto2), peso);
+					if (this.grafo.getEdge(distretto, distretto2) != null)
+					{
+						grafo.addEdge(distretto, distretto2);
+						grafo.setEdgeWeight(grafo.getEdge(distretto, distretto2), peso);
+					}
 				}
 			}
 		}
@@ -112,12 +117,9 @@ public class Model
 			for (int i : aus)
 			{
 				if (i != distretto)
-				{
 					vicini.add(new Vicino(i, grafo.getEdgeWeight(grafo.getEdge(distretto, i))));
-					Collections.sort(vicini);
-				
-				}
 			}
+			Collections.sort(vicini);
 			res+=("\n"+vicini+"\n");
 		}
 		

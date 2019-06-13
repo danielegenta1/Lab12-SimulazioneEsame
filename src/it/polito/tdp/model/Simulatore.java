@@ -2,7 +2,7 @@ package it.polito.tdp.model;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.Collections;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -123,15 +123,19 @@ System.out.println("evento: " + e);
 								nAgentiDisponibili--;
 								
 								//tempo di viaggio
-								Duration tempoViaggio = Duration.ofHours((long) (peso_min/60));
+								Duration tempoViaggio = Duration.ofSeconds((long) ((peso_min/60)*3600));
 								
 								//nuovo evento
-								this.queue.add(new Evento(e.getT().plus(tempoViaggio),e.getT_reported(), e.getDistretto(), TIPO.AGENTE_ARRIVA, e.getCategoria()));
+								this.queue.add(new Evento(e.getT().plus(tempoViaggio.toMinutes(), ChronoUnit.MINUTES),e.getT_reported(), e.getDistretto(), TIPO.AGENTE_ARRIVA, e.getCategoria()));
 							}
 						}
 					}
 					else
+					{
+						System.out.println("\nNon ci sono agenti disponibili");
 						malGestiti++;
+					}
+						
 					
 					break;
 				case AGENTE_ARRIVA:
